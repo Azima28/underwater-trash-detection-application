@@ -1,0 +1,38 @@
+server:
+  host: "0.0.0.0"
+  port: 5000
+  debug: true
+  max_content_length_mb: 500
+
+folders:
+  upload: "uploads"
+  output: "outputs"
+  models: "models"
+
+models:
+  yolov8: "yolov8n.pt"
+  yolov11: "yolov11.pt"
+  rtdetr: "rtdetr.pt"
+  default: "v8"
+
+processing:
+  inference_conf: 0.20
+  imgsz: 640
+  jpeg_quality: 80
+  video_target_width: 640
+  max_width_v8: 1024
+  max_width_rtdetr: 800
+
+cleanup:
+  interval_seconds: 300
+  max_age_seconds: 900
+
+tunnel:
+  enabled: true
+  type: "named" # Use 'quick' for trycloudflare.com or 'named' for custom setup
+  name: "laundry" # Used if type is 'named'
+  credentials_file: "C:\\Work\\project laundry\\laundry\\9a162a5f-157d-42e4-9acd-e5b6ef0904b0.json" # Path to .json file, used if type is 'named'
+  local_address: "http://127.0.0.1:5000"
+
+defaults:
+  contributor: "EcoCitizen"

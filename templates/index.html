@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoVision | AI Environmental Analytics</title>
+    <!-- Modern Sans and Serif for Editorial feel -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="#" class="brand-logo">🌿 EcoVision AI</a>
+        </div>
+        <div class="nav-right">
+            <a href="/analytics" class="btn-dashboard">
+                <i class="fas fa-chart-line"></i> Dashboard Data
+            </a>
+            <div class="version-tag">Monitoring System v2.1</div>
+        </div>
+    </nav>
+
+    <div class="global-stats-bar">
+        <div class="global-stat-item">
+            <label>Total Trash</label>
+            <div id="stat-trash">0</div>
+        </div>
+        <div class="global-stat-item">
+            <label>Total Bio</label>
+            <div id="stat-bio">0</div>
+        </div>
+        <div class="global-stat-item">
+            <label>Total ROV</label>
+            <div id="stat-rov">0</div>
+        </div>
+        <div class="global-stat-item" style="background: var(--nature-primary); color: white;">
+            <label style="color: rgba(255,255,255,0.8);">Mission Detections</label>
+            <div id="globalDetections" style="color: white;">0</div>
+        </div>
+    </div>
+
+    <section class="hero">
+        <h1>Combating Plastic Pollution with Computer Vision.</h1>
+        <p>Utilizing high-performance neural networks to identify, track, and analyze environmental waste for a
+            sustainable future.</p>
+    </section>
+
+    <main class="workspace">
+        <div class="control-panel">
+            <form id="uploadForm" class="upload-section">
+                <h2>1. Data Acquisition</h2>
+                <input type="file" id="fileInput" name="file" accept="image/*,video/*" hidden>
+                <div class="drop-zone" id="dropZone">
+                    <i>🔋</i>
+                    <b>Upload Media for Assessment</b>
+                    <p style="font-size: 0.9rem; color: var(--text-body); opacity: 0.6; margin-top: 8px;">Drag image or
+                        video files here. Supports JPEG, PNG, MP4.</p>
+                </div>
+
+                <div style="margin-top: 24px;">
+                    <label
+                        style="font-size: 0.75rem; text-transform: uppercase; font-weight: 800; color: var(--nature-accent); margin-bottom: 8px; display: block;">Contributor
+                        Identity</label>
+                    <input type="text" name="contributor" class="contributor-input"
+                        placeholder="Enter your name (e.g., EcoHero_01)">
+                </div>
+                <div class="file-info" id="fileInfo">
+                    📎 <span id="fileNameDisplay">-</span>
+                </div>
+
+                <div class="model-sidebar" style="margin-top: 40px; border-left:none; padding-left:0;">
+                    <h2 style="border-top: 1px solid var(--border-soft); padding-top: 24px;">2. Inference Architecture
+                    </h2>
+                    <div class="model-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <label class="model-card">
+                            <input type="radio" name="model" value="v8" checked>
+                            <div class="model-inner">
+                                <h3>YOLOv8</h3>
+                                <p>Standard high-speed detection</p>
+                            </div>
+                        </label>
+                        <label class="model-card">
+                            <input type="radio" name="model" value="v11">
+                            <div class="model-inner">
+                                <h3>YOLOv11</h3>
+                                <p>Next-gen high precision</p>
+                            </div>
+                        </label>
+                        <label class="model-card">
+                            <input type="radio" name="model" value="rtdetr">
+                            <div class="model-inner">
+                                <h3>RT-DETR Large</h3>
+                                <p>Transformer-based high precision but slower</p>
+                            </div>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn-analyze" id="submitBtn">Generate Impact Report</button>
+                </div>
+            </form>
+
+            <div class="context-sidebar"
+                style="padding-left: 20px; font-size: 0.9rem; border-left: 1px solid var(--border-soft);">
+                <h3
+                    style="font-family: 'Crimson Pro', serif; font-size: 1.5rem; color: var(--text-heading); margin-bottom: 20px;">
+                    Why it matters</h3>
+                <p style="margin-bottom: 16px;">Every detected piece of plastic is data that helps municipalities
+                    optimize cleanup efforts and identify pollution hotspots.</p>
+                <p style="margin-bottom: 16px;"><b>EcoVision AI</b> provides scientific metrics to transform visual
+                    waste into actionable environmental data.</p>
+                <div
+                    style="background: var(--nature-light); padding: 16px; border-radius: 8px; border-left: 4px solid var(--nature-primary);">
+                    <p style="font-style: italic; color: var(--nature-primary);">"Data is the first step toward
+                        environmental preservation."</p>
+                </div>
+
+                <div class="leaderboard-section">
+                    <h4
+                        style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--nature-accent);">
+                        Top Mission Contributors</h4>
+                    <div id="leaderboard" class="leaderboard-list">
+                        <!-- JS injected items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loader" id="loading">
+            <div class="spinner"></div>
+            <p style="font-weight: 600;">Analyzing environmental metrics...</p>
+        </div>
+
+        <div id="error"
+            style="color: #991b1b; background: #fee2e2; padding: 20px; border-radius: 8px; margin-top: 24px; text-align: center; display: none;">
+        </div>
+
+        <!-- Result Section (Magazine/Article Style) -->
+        <div class="report-view" id="resultArea">
+            <div class="report-header">
+                <h2>Environmental Assessment Report</h2>
+                <div class="report-meta" id="reportDate">SCAN COMPLETED</div>
+            </div>
+
+            <div class="grid-layout">
+                <!-- Visual Evidence -->
+                <div class="evidence-block">
+                    <h3
+                        style="font-size: 1.1rem; border-left: 4px solid var(--nature-primary); padding-left: 12px; margin-bottom: 24px;">
+                        Visual Evidence Acquisition</h3>
+                    <div class="visual-evidence" id="evidenceContainer">
+                        <img id="mainDisplay" src="" alt="Neural Output">
+                    </div>
+                </div>
+
+                <!-- Statistics Column -->
+                <div class="article-stats">
+                    <div class="stat-block">
+                        <h4>Neural Object Count</h4>
+                        <div class="big-num" id="objCount">0</div>
+                        <p style="font-size: 0.85rem; color: var(--nature-accent); font-weight: 700;">TOTAL DETECTIONS
+                        </p>
+                    </div>
+
+                    <div class="stat-block">
+                        <h4>Class Stratification</h4>
+                        <div id="classDetails" style="font-weight: 600; color: var(--text-heading); line-height: 1.8;">-
+                        </div>
+                    </div>
+
+                    <div class="stat-block" id="fpsBlock" style="display: none;">
+                        <h4>Stream Status</h4>
+                        <div
+                            style="color: var(--nature-primary); font-weight: 800; font-family: 'Crimson Pro', serif; font-size: 1.5rem;">
+                            ● ANALYZING LIVE</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Report text -->
+            <div class="assessment-report" id="pollutionReport">
+                <div class="report-text">
+                    <h3 id="pollTitle">Assessing Surface Pollution</h3>
+                    <p id="pollDesc"></p>
+                    <div
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; border-top: 1px solid var(--border-soft); padding-top: 32px;">
+                        <div>
+                            <h4
+                                style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; color: var(--nature-accent);">
+                                Informed Action Plan</h4>
+                            <ul class="action-list" id="recList"></ul>
+                        </div>
+                        <div
+                            style="display:flex; flex-direction:column; justify-content:center; align-items:center; background:rgba(255,255,255,0.5); border-radius: 12px;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Impact Score</span>
+                            <div style="font-size: 4rem; font-weight: 900; color: var(--text-heading);" id="pollScore">0
+                            </div>
+                            <span style="font-size: 1.1rem; font-weight: 700;" id="pollStatusTag">STABLE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analytics-block">
+                <h3
+                    style="font-size: 1.1rem; border-left: 4px solid var(--nature-primary); padding-left: 12px; margin-bottom: 24px;">
+                    Data Visualization</h3>
+                <div class="chart-box">
+                    <canvas id="chart"></canvas>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: center; padding-bottom: 80px;">
+                <a href="#" class="btn-analyze" id="dlBtn"
+                    style="width: auto; padding: 20px 60px; text-decoration: none; background: #1e293b;">Download Audit
+                    Dataset (Video/Image)</a>
+            </div>
+        </div>
+    </main>
+
+    <section class="info-strip">
+        <b>Sustainability through Intelligent Vision.</b>
+        <p>EcoVision AI is part of a global effort to track and eliminate marine and urban plastic waste via scalable
+            deep learning solutions.</p>
+        <p style="margin-top: 20px; font-size: 0.8rem;">&copy; 2025 AI Vision Environmental Agency.</p>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
