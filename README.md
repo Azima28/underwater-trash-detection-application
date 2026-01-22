@@ -264,7 +264,19 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📧 Contact
 
-Project Link: [https://github.com/Azima28/underwater-trash-detection-application](https://github.com/Azima28/underwater-trash-detection-application)
+<p align="center">
+  <a href="https://github.com/Azima28/underwater-trash-detection-application">
+    <img src="https://img.shields.io/badge/GitHub-underwater--trash--detection--application-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://www.instagram.com/zimm.dev">
+    <img src="https://img.shields.io/badge/Instagram-@zimm.dev-E4405F?style=for-the-badge&logo=instagram&logoColor=white" alt="Instagram">
+  </a>
+</p>
+
+<p align="center">
+  <sub>💬 Feel free to reach out for collaboration or questions!</sub>
+</p>
 
 ---
 
